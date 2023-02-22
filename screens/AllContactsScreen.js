@@ -9,17 +9,14 @@ class AllContactsScreen extends Component {
 
     render() {
         return (
-            
-
             <View style={styles.container1}>
             <View style={styles.container2}>
 
-                <View>
+                <View style={styles.textContainer}>
                     <Text>AllContacts page</Text>
                 </View>
             </View>
             </View>
-
         )
     }
 }
@@ -38,6 +35,12 @@ const styles = StyleSheet.create({
       justifyContent: "center",
 
       //border: "1px solid black"
+    },
+    textContainer: {
+        flex: 1,
+        //border: "1px solid blue",
+        justifyContent: "center",
+        textAlign: "center"
     }
 });
 

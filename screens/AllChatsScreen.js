@@ -14,7 +14,7 @@ class AllChatsScreen extends Component {
             <View style={styles.container1}>
             <View style={styles.container2}>
 
-                <View>
+                <View style={styles.textContainer}>
                     <Text>AllChats page</Text>
                 </View>
             </View>
@@ -38,6 +38,12 @@ const styles = StyleSheet.create({
       justifyContent: "center",
 
       //border: "1px solid black"
+    },
+    textContainer: {
+        flex: 1,
+        //border: "1px solid blue",
+        justifyContent: "center",
+        textAlign: "center"
     }
 });
 

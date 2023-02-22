@@ -5,11 +5,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import SuccessfulRegisterScreen from './screens/SuccessfulRegisterScreen';
-
+import HomeNavigator from './screens/HomeNavigator';
 
 const Stack = createNativeStackNavigator();
 
-export default class App extends Component {
+class App extends Component {
   
   constructor(props) {
     super(props);
@@ -18,7 +18,14 @@ export default class App extends Component {
   render() {  
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator
+          initialRouteName="Login"
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#FEFAE0'
+            }
+          }}
+        >
           <Stack.Screen 
             name="Login"
             component={LoginScreen} 
@@ -33,8 +40,20 @@ export default class App extends Component {
             component={SuccessfulRegisterScreen}
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="HomeNavigator"
+            component={HomeNavigator}
+            options={{ 
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#FEFAE0'
+              }
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     )
   }
 }
+
+export default App;
