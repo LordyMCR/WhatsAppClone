@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 
 import * as EmailValidator from 'email-validator';
 
-export default class RegisterScreen extends Component {
+class RegisterScreen extends Component {
 
     constructor(props){
         super(props);
@@ -224,3 +224,5 @@ const styles = StyleSheet.create({
         fontWeight: "900"
     }
   });
+
+  export default RegisterScreen;

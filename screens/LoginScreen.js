@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 
 import * as EmailValidator from 'email-validator';
 
-export default class LoginScreen extends Component {
+class LoginScreen extends Component {
 
     constructor(props){
         super(props);
@@ -21,26 +21,22 @@ export default class LoginScreen extends Component {
     _onPressLoginButton(){
         this.setState({submitted: true})
         this.setState({error: ""})
+        const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
 
         if(!(this.state.email && this.state.password)){
             this.setState({error: "Must enter email and password"})
             return;
-        }
-
-        if(!EmailValidator.validate(this.state.email)){
+        } else if(!EmailValidator.validate(this.state.email)){
             this.setState({error: "Must enter valid email"})
             return;
-        }
-
-        const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
-        if(!PASSWORD_REGEX.test(this.state.password)){
+        } else if(!PASSWORD_REGEX.test(this.state.password)){
             this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
             return;
+        } else {
+            console.log("Button clicked: " + this.state.email + " " + this.state.password)
+            console.log("Validated and ready to send to the API")
+            this.props.navigation.navigate('HomeNavigator')
         }
-
-        console.log("Button clicked: " + this.state.email + " " + this.state.password)
-        console.log("Validated and ready to send to the API")
-
     }
 
     render(){
@@ -172,3 +168,5 @@ const styles = StyleSheet.create({
         fontWeight: "900"
     }
   });
+
+  export default LoginScreen;

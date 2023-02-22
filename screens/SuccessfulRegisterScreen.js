@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-export default class SuccessfulRegisterScreen extends Component {
+class SuccessfulRegisterScreen extends Component {
 
     constructor(props){
         super(props);
@@ -76,3 +76,5 @@ const styles = StyleSheet.create({
         //paddingTop: "50px"
     }
   });
+
+  export default SuccessfulRegisterScreen;
