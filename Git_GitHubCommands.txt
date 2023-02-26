@@ -20,7 +20,6 @@ git commit -m "message here"
 
 git remote add origin git@github.com:LordyMCR/WhatsThatAssignment.git
 
-
 # Push to GitHub
 
 git push -u -f origin main
