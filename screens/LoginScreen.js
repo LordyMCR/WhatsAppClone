@@ -9,6 +9,7 @@ class LoginScreen extends Component {
         super(props);
 
         this.state = {
+            isLoading: false,
             email: "",
             password: "",
             error: "", 
@@ -19,23 +20,51 @@ class LoginScreen extends Component {
     }
 
     _onPressLoginButton(){
+        this.setState({isLoading: true})
         this.setState({submitted: true})
         this.setState({error: ""})
         const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
 
         if(!(this.state.email && this.state.password)){
+            this.setState({isLoading: false})
             this.setState({error: "Must enter email and password"})
             return;
         } else if(!EmailValidator.validate(this.state.email)){
+            this.setState({isLoading: false})
             this.setState({error: "Must enter valid email"})
             return;
         } else if(!PASSWORD_REGEX.test(this.state.password)){
+            this.setState({isLoading: false})
             this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
             return;
         } else {
             console.log("Button clicked: " + this.state.email + " " + this.state.password)
             console.log("Validated and ready to send to the API")
-            this.props.navigation.navigate('HomeNavigator')
+            
+            //API
+            let toSend = {
+                email: this.state.email,
+                password: this.state.password
+            };
+
+            return fetch("http://localhost:3333/api/1.0.0/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(toSend)
+            })
+            .then((response) => {
+                if(response.ok) {
+                    this.setState({isLoading: false})
+                    this.props.navigation.navigate('HomeNavigator')
+                } else {
+                    this.setState({error: "Username not found, try again."})
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         }
     }
 
@@ -54,7 +83,7 @@ class LoginScreen extends Component {
                                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
                                 placeholder="Enter email"
                                 onChangeText={email => this.setState({email})}
-                                defaultValue={this.state.email}
+                                value={this.state.email}
                             />
 
                             <>
@@ -69,7 +98,7 @@ class LoginScreen extends Component {
                                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
                                 placeholder="Enter password"
                                 onChangeText={password => this.setState({password})}
-                                defaultValue={this.state.password}
+                                value={this.state.password}
                                 secureTextEntry
                             />
 

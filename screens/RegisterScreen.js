@@ -9,6 +9,8 @@ class RegisterScreen extends Component {
         super(props);
 
         this.state = {
+            isLoading: false,
+            registrationData: [],
             firstName: "",
             lastName: "",
             email: "",
@@ -22,34 +24,60 @@ class RegisterScreen extends Component {
     }
 
     _onPressRegisterButton(){
+        this.setState({isLoading: true})
         this.setState({submitted: true})
-        this.setState({error: ""})
         const NAME_REGEX = new RegExp("^[A-Za-z]+(((\'|\-|\.)?([A-Za-z])+))?$");
         const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
 
         if(!(this.state.firstName && this.state.lastName && this.state.email && this.state.password)){
+            this.setState({isLoading: false})
             this.setState({error: "Must enter first name, last name, email, password and confirm password"})
             return;
         } else if(!NAME_REGEX.test(this.state.firstName)){
+            this.setState({isLoading: false})
             this.setState({error: "First name must only contain upper or lower case letters, and ' special character"})
             return;
         } else if(!NAME_REGEX.test(this.state.lastName)){
+            this.setState({isLoading: false})
             this.setState({error: "Last name must only contain upper or lower case letters, and ' special character"})
             return;
         } else if(!EmailValidator.validate(this.state.email)){
+            this.setState({isLoading: false})
             this.setState({error: "Must enter valid email"})
             return;
         } else if(!PASSWORD_REGEX.test(this.state.password)){
+            this.setState({isLoading: false})
             this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
             return;
         } else if((this.state.password) != (this.state.confirmPassword)){
+            this.setState({isLoading: false})
             this.setState({error: "Passwords do not match "})
             return;
         } else {
             console.log("Button clicked: " + this.state.firstName + " " + this.state.lastName + " " + this.state.email + " " + this.state.password + " " + this.state.confirmPassword)
             console.log("Validated and ready to send to the API")
             // API call
-            this.props.navigation.navigate('SuccessfullyRegistered')
+            let toSend = {
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+                email: this.state.email,
+                password: this.state.password
+            };
+
+            return fetch("http://localhost:3333/api/1.0.0/user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(toSend)
+            })
+            .then((response) => {
+                this.setState({isLoading: false})
+                this.props.navigation.navigate('SuccessfullyRegistered')
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         }
     }
 
@@ -68,7 +96,7 @@ class RegisterScreen extends Component {
                                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
                                 placeholder="Enter first name"
                                 onChangeText={firstName => this.setState({firstName})}
-                                defaultValue={this.state.firstName}
+                                value={this.state.firstName}
                             />
 
                             <>
@@ -83,7 +111,7 @@ class RegisterScreen extends Component {
                                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
                                 placeholder="Enter last name"
                                 onChangeText={lastName => this.setState({lastName})}
-                                defaultValue={this.state.lastName}
+                                value={this.state.lastName}
                             />
 
                             <>
@@ -98,7 +126,7 @@ class RegisterScreen extends Component {
                                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
                                 placeholder="Enter email"
                                 onChangeText={email => this.setState({email})}
-                                defaultValue={this.state.email}
+                                value={this.state.email}
                             />
 
                             <>
@@ -113,7 +141,7 @@ class RegisterScreen extends Component {
                                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
                                 placeholder="Enter password"
                                 onChangeText={password => this.setState({password})}
-                                defaultValue={this.state.password}
+                                value={this.state.password}
                                 secureTextEntry
                             />
 
@@ -129,7 +157,7 @@ class RegisterScreen extends Component {
                                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
                                 placeholder="Confirm password"
                                 onChangeText={confirmPassword => this.setState({confirmPassword})}
-                                defaultValue={this.state.confirmPassword}
+                                value={this.state.confirmPassword}
                                 secureTextEntry
                             />
 
