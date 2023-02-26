@@ -1,0 +1,26 @@
+https://www.digitalocean.com/community/tutorials/how-to-push-an-existing-project-to-github
+
+# Initialise Git repository (SKIP IF ALREADY INITIALISED)
+
+git init
+
+# Check Git repo file structure
+
+git ls-files
+
+# Add files to Git index
+
+git add -A
+
+# Commit added files
+
+git commit -m "message here"
+
+# Add a new remote origin
+
+git remote add origin git@github.com:LordyMCR/WhatsThatAssignment.git
+
+
+# Push to GitHub
+
+git push -u -f origin main
