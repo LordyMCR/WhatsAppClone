@@ -5,6 +5,32 @@ class AllChatsScreen extends Component {
 
     constructor(props){
         super(props);
+
+        this.state = {
+            isLoading: true,
+            allChatsData: ""
+        }
+    }
+
+    componentDidMount(){
+        console.log("mounted");
+        this.getAllChats();
+    }
+
+    getAllChats(){
+        console.log("getting all chats...");
+        return fetch("http://localhost:3333/api/1.0.0/chat")
+        .then((response) => response.json())
+        .then((responseJson) => {
+            console.log(responseJson);
+            this.setState({
+                isLoading: false,
+                allChatsData: responseJson
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     }
 
     render() {

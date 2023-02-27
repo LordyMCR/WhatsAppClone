@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
 import * as EmailValidator from 'email-validator';
 
@@ -59,6 +59,7 @@ class LoginScreen extends Component {
                     this.setState({isLoading: false})
                     this.props.navigation.navigate('HomeNavigator')
                 } else {
+                    this.setState({isLoading: false})
                     this.setState({error: "Username not found, try again."})
                 }
             })
@@ -69,69 +70,85 @@ class LoginScreen extends Component {
     }
 
     render(){
-        return (
-            <View style={styles.container1}>
-            <View style={styles.container2}>
-
-                <View style={styles.logoContainer}>
-                    <Text style={styles.logoText}>WhatsThat</Text>
-                </View>
-
-                    <View style={styles.formContainer}>
-                        <View style={styles.email}>
-                            <TextInput
-                                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
-                                placeholder="Enter email"
-                                onChangeText={email => this.setState({email})}
-                                value={this.state.email}
-                            />
-
-                            <>
-                                {this.state.submitted && !this.state.email &&
-                                    <Text style={styles.error}>*Email is required</Text>
-                                }
-                            </>
+        if(this.state.isLoading){
+            return(
+                <View style={styles.container1}>
+                    <View style={styles.container2}>
+                        <View style={styles.logoContainer}>
+                            <Text style={styles.logoText}>WhatsThat</Text>
                         </View>
-                
-                        <View style={styles.password}>
-                            <TextInput
-                                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
-                                placeholder="Enter password"
-                                onChangeText={password => this.setState({password})}
-                                value={this.state.password}
-                                secureTextEntry
-                            />
-
-                            <>
-                                {this.state.submitted && !this.state.password &&
-                                    <Text style={styles.error}>*Password is required</Text>
-                                }
-                            </>
-                        </View>
-                
-                        <View style={styles.loginbtn}>
-                            <TouchableOpacity onPress={this._onPressLoginButton}>
-                                <View style={styles.button}>
-                                    <Text style={styles.buttonText}>Login</Text>
-                                </View>
-                            </TouchableOpacity>
+                        <View style={styles.formContainer}>
+                            <ActivityIndicator size="large" color="#606C38" />
                         </View>
 
-                        <>
-                            {this.state.error &&
-                                <Text style={styles.error}>{this.state.error}</Text>
-                            }
-                        </>
-                
-                        <View>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
-                                <Text style={styles.signup}>New here? Register</Text>
-                            </TouchableOpacity>
-                        </View>
                     </View>
-            </View>
-            </View>
-        )
+                </View>
+            );
+        } else {
+            return(
+                <View style={styles.container1}>
+                <View style={styles.container2}>
+
+                    <View style={styles.logoContainer}>
+                        <Text style={styles.logoText}>WhatsThat</Text>
+                    </View>
+
+                        <View style={styles.formContainer}>
+                            <View style={styles.email}>
+                                <TextInput
+                                    style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
+                                    placeholder="Enter email"
+                                    onChangeText={email => this.setState({email})}
+                                    value={this.state.email}
+                                />
+
+                                <>
+                                    {this.state.submitted && !this.state.email &&
+                                        <Text style={styles.error}>*Email is required</Text>
+                                    }
+                                </>
+                            </View>
+                    
+                            <View style={styles.password}>
+                                <TextInput
+                                    style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "#fff"}}
+                                    placeholder="Enter password"
+                                    onChangeText={password => this.setState({password})}
+                                    value={this.state.password}
+                                    secureTextEntry
+                                />
+
+                                <>
+                                    {this.state.submitted && !this.state.password &&
+                                        <Text style={styles.error}>*Password is required</Text>
+                                    }
+                                </>
+                            </View>
+                    
+                            <View style={styles.loginbtn}>
+                                <TouchableOpacity onPress={this._onPressLoginButton}>
+                                    <View style={styles.button}>
+                                        <Text style={styles.buttonText}>Login</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                            <>
+                                {this.state.error &&
+                                    <Text style={styles.error}>{this.state.error}</Text>
+                                }
+                            </>
+                    
+                            <View>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+                                    <Text style={styles.signup}>New here? Register</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                </View>
+                </View>
+            )
+        }
     }
 
 }
