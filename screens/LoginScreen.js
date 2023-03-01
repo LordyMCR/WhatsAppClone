@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
 import * as EmailValidator from 'email-validator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class LoginScreen extends Component {
 
@@ -17,6 +18,37 @@ class LoginScreen extends Component {
         }
 
         this._onPressLoginButton = this._onPressLoginButton.bind(this)
+    }
+
+    componentDidMount(){
+        this.unsubscribe = this.props.navigation.addListener("focus", () => {
+            this.checkLoggedIn();
+        });
+    }
+    
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    checkLoggedIn = async () => {
+        const token = await AsyncStorage.getItem("whatsthat_session_token");
+        if(token !== null) {
+            this.props.navigation.navigate("HomeNavigator");
+        }
+    }
+
+    formValidationReset(){
+        this.setState({
+            isLoading: false,
+            email: "",
+            password: "",
+            submitted: false
+        })
+    }
+
+    registerNavigate(){
+        this.formValidationReset()
+        this.props.navigation.navigate('Register')
     }
 
     _onPressLoginButton(){
@@ -55,16 +87,28 @@ class LoginScreen extends Component {
                 body: JSON.stringify(toSend)
             })
             .then((response) => {
-                if(response.ok) {
+                if(response.status === 200) {
+                    return response.json();
+                } else if(response.status === 400) {
                     this.setState({isLoading: false})
-                    this.props.navigation.navigate('HomeNavigator')
+                    throw "Invalid email/password, try again"
                 } else {
-                    this.setState({isLoading: false})
-                    this.setState({error: "Username not found, try again."})
+                    throw "Something went wrong, try again"
+                }
+            })
+            .then((json) => {
+                try {
+                    AsyncStorage.setItem("whatsthat_user_id", json.id)
+                    AsyncStorage.setItem("whatsthat_session_token", json.token)
+                    this.formValidationReset()
+                    this.props.navigation.navigate('HomeNavigator')
+                } catch {
+                    throw "Something went wrong"
                 }
             })
             .catch((error) => {
-                console.log(error);
+                this.setState({error: error})
+                this.setState({submitted: false})
             })
         }
     }
@@ -140,7 +184,7 @@ class LoginScreen extends Component {
                             </>
                     
                             <View>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+                                <TouchableOpacity onPress={() => this.registerNavigate()}>
                                     <Text style={styles.signup}>New here? Register</Text>
                                 </TouchableOpacity>
                             </View>

@@ -73,10 +73,21 @@ class RegisterScreen extends Component {
             })
             .then((response) => {
                 this.setState({isLoading: false})
+                this.setState({submitted: false})
+                if(response.status === 201) {
+                    return response.json();
+                } else if(response.status === 400) {
+                    throw "Email already exists or password isn't strong enough"
+                } else {
+                    throw "Something went wrong, try again"
+                }
+            })
+            .then((json) => {
                 this.props.navigation.navigate('SuccessfullyRegistered')
             })
             .catch((error) => {
-                console.log(error);
+                this.setState({error: error})
+                this.setState({submitted: false})
             })
         }
     }
