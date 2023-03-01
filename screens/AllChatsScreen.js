@@ -124,18 +124,17 @@ class AllChatsScreen extends Component {
 
 const styles = StyleSheet.create({
     container1: {
-    flex: 1,
-    backgroundColor: '#FEFAE0',
-    alignItems: 'center',
-    justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#FEFAE0',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     container2: {
-      flex: 1,
-      width: "80%",
-      alignItems: "stretch",
-      justifyContent: "center",
-
-      //border: "1px solid black"
+        flex: 1,
+        width: "80%",
+        alignItems: "stretch",
+        justifyContent: "center",
+        //border: "1px solid black"
     },
     textContainer: {
         flex: 1,
@@ -144,47 +143,48 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     chatContainer: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 6,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
-      },
-      avatar: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        marginRight: 12,
-      },
-      chatInfo: {
-        flex: 1,
-        justifyContent: 'center',
-      },
-      chatName: {
+    },
+    chatName: {
+        flex: 2,
+        border: "1px solid red",
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 14,
         marginBottom: 4,
-      },
-      chatLastMessage: {
+        textAlign: "center",
+    },
+    chatLastMessage: {
+        flex: 6,
+        border: "1px solid red",
         paddingLeft: 10,
         color: '#888',
         fontSize: 14,
-      },
-      chatTimestamp: {
+        textAlign: "center",
+    },
+    chatTimestamp: {
+        flex: 2,
+        border: "1px solid red",
         color: '#888',
         fontSize: 12,
-      },
-      emptyContainer: {
+        textAlign: "center",
+    },
+    emptyContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-      },
-      emptyText: {
+    },
+    emptyText: {
         color: '#888',
         fontSize: 18,
         textAlign: 'center',
         marginHorizontal: 32,
-      },
+    },
 });
+
 
 export default AllChatsScreen; 
