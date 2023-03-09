@@ -3,22 +3,21 @@ import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity }
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class AllContactsScreen extends Component {
+class MyContactsScreen extends Component {
 
     constructor(props){
         super(props);
 
         this.state = {
             isLoading: true,
-            allContactsData: [],
-            error: ""
+            myContactsData: []
         }
     }
     
-    async getAllContacts() {
+    async getMyContacts() {
         try {
-            console.log("getting all contacts...");
-            const response = await fetch("http://localhost:3333/api/1.0.0/search", {
+            console.log("getting my contacts...");
+            const response = await fetch("http://localhost:3333/api/1.0.0/contacts", {
             method: "GET",
                 headers: {
                     "X-Authorization": await AsyncStorage.getItem("whatsthat_session_token")
@@ -26,20 +25,20 @@ class AllContactsScreen extends Component {
             })
             if(response.status === 200) {
                 let contactsJson = await response.json();
-                let sortedJson = contactsJson.sort((a, b) => a.given_name.localeCompare(b.given_name));
+                let sortedJson = contactsJson.sort((a, b) => a.first_name.localeCompare(b.first_name));
                 this.setState({
                     isLoading: false,
-                    allContactsData: sortedJson
+                    myContactsData: contactsJson
                 });
             } else if(response.status === 401) {
                 this.setState({
                     isLoading: false,
-                    error: "Unauthorised"
+                    myContactsData: "Unauthorised"
                 });
             } else {
                 this.setState({
                     isLoading: false,
-                    error: "Internal Server Error, try again"
+                    myContactsData: "Internal Server Error, try again"
                 });
             }
         } catch (error) {
@@ -51,7 +50,7 @@ class AllContactsScreen extends Component {
     componentDidMount(){
         this.contacts = this.props.navigation.addListener("focus", () => {
             console.log("mounted");
-            this.getAllContacts();
+            this.getMyContacts();
         })
     }
 
@@ -72,7 +71,7 @@ class AllContactsScreen extends Component {
                 </View>
             );
         } else {
-            if(this.state.allContactsData.length === 0) {
+            if(this.state.myContactsData.length === 0) {
                 return (
                     <View style={styles.container1}>
                             <View style={styles.container2}>
@@ -88,18 +87,20 @@ class AllContactsScreen extends Component {
                     <View style={styles.container1}>
                         <View style={styles.container2}>
                             <FlatList
-                                data={this.state.allContactsData}
+                                data={this.state.myContactsData}
                                 keyExtractor={(item) => item.user_id.toString()}
                                 renderItem={({ item }) => (
                                     <TouchableOpacity
                                     onPress={() =>
                                         this.props.navigation.navigate("ContactScreen", {
                                             user_id: item.user_id,
+                                            first_name: item.first_name,
+                                            last_name: item.last_name
                                         })
                                     }
                                     >
                                     <View style={styles.contactContainer}>
-                                        <Text style={styles.contactName}>{item.given_name} {item.family_name}</Text>
+                                        <Text style={styles.contactName}>{item.first_name} {item.last_name}</Text>
                                     </View>
                                     </TouchableOpacity>
                                 )}
@@ -166,4 +167,4 @@ const styles = StyleSheet.create({
       },
 });
 
-export default AllContactsScreen; 
+export default MyContactsScreen; 

@@ -3,22 +3,21 @@ import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity }
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class AllContactsScreen extends Component {
+class BlockedContactsScreen extends Component {
 
     constructor(props){
         super(props);
 
         this.state = {
             isLoading: true,
-            allContactsData: [],
-            error: ""
+            allContactsData: []
         }
     }
     
     async getAllContacts() {
         try {
-            console.log("getting all contacts...");
-            const response = await fetch("http://localhost:3333/api/1.0.0/search", {
+            console.log("getting blocked contacts...");
+            const response = await fetch("http://localhost:3333/api/1.0.0/blocked", {
             method: "GET",
                 headers: {
                     "X-Authorization": await AsyncStorage.getItem("whatsthat_session_token")
@@ -26,20 +25,19 @@ class AllContactsScreen extends Component {
             })
             if(response.status === 200) {
                 let contactsJson = await response.json();
-                let sortedJson = contactsJson.sort((a, b) => a.given_name.localeCompare(b.given_name));
                 this.setState({
                     isLoading: false,
-                    allContactsData: sortedJson
+                    allContactsData: contactsJson
                 });
             } else if(response.status === 401) {
                 this.setState({
                     isLoading: false,
-                    error: "Unauthorised"
+                    allContactsData: "Unauthorised"
                 });
             } else {
                 this.setState({
                     isLoading: false,
-                    error: "Internal Server Error, try again"
+                    allContactsData: "Internal Server Error, try again"
                 });
             }
         } catch (error) {
@@ -78,7 +76,7 @@ class AllContactsScreen extends Component {
                             <View style={styles.container2}>
 
                             <View style={styles.textContainer}>
-                                <Text>No contacts yet</Text>
+                                <Text>No blocked contacts</Text>
                             </View>
                         </View>
                     </View>
@@ -94,12 +92,12 @@ class AllContactsScreen extends Component {
                                     <TouchableOpacity
                                     onPress={() =>
                                         this.props.navigation.navigate("ContactScreen", {
-                                            user_id: item.user_id,
+                                        user_id: item.user_id,
                                         })
                                     }
                                     >
                                     <View style={styles.contactContainer}>
-                                        <Text style={styles.contactName}>{item.given_name} {item.family_name}</Text>
+                                        <Text style={styles.contactName}>{item.first_name} {item.last_name}</Text>
                                     </View>
                                     </TouchableOpacity>
                                 )}
@@ -166,4 +164,4 @@ const styles = StyleSheet.create({
       },
 });
 
-export default AllContactsScreen; 
+export default BlockedContactsScreen; 

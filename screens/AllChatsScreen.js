@@ -25,9 +25,10 @@ class AllChatsScreen extends Component {
             })
             if(response.status === 200) {
                 let chatsJson = await response.json();
+                let sortedJson = chatsJson.sort((a, b) => b.last_message.timestamp - a.last_message.timestamp);
                 this.setState({
                     isLoading: false,
-                    allChatsData: chatsJson
+                    allChatsData: sortedJson
                 });
             } else if(response.status === 401) {
                 this.setState({
@@ -90,12 +91,12 @@ class AllChatsScreen extends Component {
                                 keyExtractor={(item) => item.chat_id.toString()}
                                 renderItem={({ item }) => (
                                     <TouchableOpacity
-                                    onPress={() =>
-                                        this.props.navigation.navigate("ChatScreen", {
-                                        chat_id: item.chat_id,
-                                        chat_name: item.name,
-                                        })
-                                    }
+                                        onPress={() =>
+                                            this.props.navigation.navigate("ChatScreen", {
+                                                chat_id: item.chat_id,
+                                                chat_name: item.name,
+                                            })
+                                        }
                                     >
                                     <View style={styles.chatContainer}>
                                         <Text style={styles.chatName}>{item.name}</Text>
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     },
     chatName: {
         flex: 2,
-        border: "1px solid red",
+        //border: "1px solid red",
         fontWeight: 'bold',
         fontSize: 14,
         marginBottom: 4,
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     },
     chatLastMessage: {
         flex: 6,
-        border: "1px solid red",
+        //border: "1px solid red",
         paddingLeft: 10,
         color: '#888',
         fontSize: 14,
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     },
     chatTimestamp: {
         flex: 2,
-        border: "1px solid red",
+        //border: "1px solid red",
         color: '#888',
         fontSize: 12,
         textAlign: "center",

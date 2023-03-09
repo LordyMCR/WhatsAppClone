@@ -49,7 +49,7 @@ class Logout extends Component {
 
 const styles = StyleSheet.create({
     icon: {
-        paddingLeft: "5px"
+        paddingRight: "5px"
     }
   });
 
