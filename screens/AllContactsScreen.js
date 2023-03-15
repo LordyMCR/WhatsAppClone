@@ -95,6 +95,8 @@ class AllContactsScreen extends Component {
                                     onPress={() =>
                                         this.props.navigation.navigate("ContactScreen", {
                                             user_id: item.user_id,
+                                            first_name: item.given_name,
+                                            last_name: item.family_name,
                                         })
                                     }
                                     >

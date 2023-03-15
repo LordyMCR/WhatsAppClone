@@ -10,7 +10,7 @@ class AllChatsScreen extends Component {
 
         this.state = {
             isLoading: true,
-            allChatsData: []
+            allChatsData: [],
         }
     }
     
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
     container2: {
         flex: 1,
-        width: "80%",
+        width: "90%",
         alignItems: "stretch",
         justifyContent: "center",
         //border: "1px solid black"

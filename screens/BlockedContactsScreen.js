@@ -92,7 +92,9 @@ class BlockedContactsScreen extends Component {
                                     <TouchableOpacity
                                     onPress={() =>
                                         this.props.navigation.navigate("ContactScreen", {
-                                        user_id: item.user_id,
+                                            user_id: item.user_id,
+                                            first_name: item.first_name,
+                                            last_name: item.last_name
                                         })
                                     }
                                     >

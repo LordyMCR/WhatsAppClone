@@ -4,11 +4,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import MyContactsScreen from './MyContactsScreen';
 import AllContactsScreen from "./AllContactsScreen";
 import BlockedContactsScreen from "./BlockedContactsScreen";
-import ContactScreen from './ContactScreen';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createMaterialTopTabNavigator();
-const Stack = createNativeStackNavigator();
 
 class ContactsNavigator extends Component {
 

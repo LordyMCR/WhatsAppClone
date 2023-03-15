@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import ChatsNavigator from './ChatsNavigator';
-import ContactsNavigator from './ContactsNavigator';
-import Logout from '../components/Logout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeTabNav from './HomeTabNav';
+import ChatScreen from './ChatScreen';
+import ContactScreen from './ContactScreen';
 
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 class HomeNavigator extends Component {
 
@@ -35,33 +33,30 @@ class HomeNavigator extends Component {
 
   render() {
     return (
-      <Tab.Navigator 
-        initialRouteName='Chats'
-        screenOptions={({ route }) => ({
-          headerRight: () => <Logout navigation={this.props.navigation}/>,
-          headerStyle: {
-            backgroundColor: '#FEFAE0'
-          },
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-
-            if (route.name === 'Chats') {
-              iconName = focused ? 'message' : 'message-outline';
-            } else if (route.name === 'Contacts') {
-              iconName = focused ? 'contacts' : 'contacts-outline';
-            }
-            return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#606C38',
-          tabBarInactiveTintColor: '#000',
-          tabBarStyle: {
-            backgroundColor: '#FEFAE0',
-          }
-        })}
-      >
-        <Tab.Screen name="Chats" component={ChatsNavigator} />
-        <Tab.Screen name="Contacts" component={ContactsNavigator} />
-      </Tab.Navigator>
+      
+      <Stack.Navigator>
+        <Stack.Screen name="HomeTabNav" component={HomeTabNav} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="ChatScreen" 
+          component={ChatScreen} 
+          options={({route}) => ({
+            title: route.params.chat_name,
+            headerStyle: {
+              backgroundColor: "#FEFAE0"
+            },
+            })}
+        />
+        <Stack.Screen
+          name="ContactScreen" 
+          component={ContactScreen} 
+          options={({route}) => ({
+            title:  route.params.first_name + " " + route.params.last_name,
+            headerStyle: {
+              backgroundColor: "#FEFAE0"
+            },
+            })}
+        />
+      </Stack.Navigator>
     );
   }
 }

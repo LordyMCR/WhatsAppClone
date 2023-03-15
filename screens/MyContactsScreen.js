@@ -28,7 +28,7 @@ class MyContactsScreen extends Component {
                 let sortedJson = contactsJson.sort((a, b) => a.first_name.localeCompare(b.first_name));
                 this.setState({
                     isLoading: false,
-                    myContactsData: contactsJson
+                    myContactsData: sortedJson
                 });
             } else if(response.status === 401) {
                 this.setState({
@@ -115,10 +115,10 @@ class MyContactsScreen extends Component {
 
 const styles = StyleSheet.create({
     container1: {
-    flex: 1,
-    backgroundColor: '#FEFAE0',
-    alignItems: 'center',
-    justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#FEFAE0',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     container2: {
       flex: 1,
