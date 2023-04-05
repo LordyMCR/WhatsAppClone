@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -40,16 +40,22 @@ class Logout extends Component {
 
     render() {
         return (
-        <TouchableOpacity onPress={this._onPressLogoutButton} style={styles.icon}>
-            <MaterialCommunityIcons name="dots-vertical-circle" size={24} color="#606C38" />
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.logoutButton} onPress={this._onPressLogoutButton}>
+                <Text color="white" textAlign="center"><MaterialCommunityIcons name="logout" size={16} color="white" /> Log Out</Text>
+            </TouchableOpacity>
         );
     }
 };
 
 const styles = StyleSheet.create({
-    icon: {
-        paddingRight: "5px"
+    logoutButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor: 'grey',
+        borderRadius: 25,
     }
   });
 

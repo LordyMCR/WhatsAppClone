@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AllChatsScreen from './AllChatsScreen';
 import ContactsNavigator from './ContactsNavigator';
-import AccountNavigator from './AccountNavigator'
-import Logout from '../components/Logout';
+import MyAccountScreen from './MyAccountScreen';
+
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -21,7 +21,6 @@ class HomeTabNav extends Component {
         <Tab.Navigator 
         initialRouteName='Chats'
         screenOptions={({ route }) => ({
-          headerRight: () => <Logout navigation={this.props.navigation}/>,
           headerStyle: {
             backgroundColor: '#FEFAE0'
           },
@@ -46,7 +45,7 @@ class HomeTabNav extends Component {
       >
         <Tab.Screen name="Chats" component={AllChatsScreen} />
         <Tab.Screen name="Contacts" component={ContactsNavigator} />
-        <Tab.Screen name="Account" component={AccountNavigator} />
+        <Tab.Screen name="Account" component={MyAccountScreen} />
       </Tab.Navigator>
     );
   }

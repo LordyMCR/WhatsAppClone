@@ -1,16 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { ActivityIndicator } from 'react-native-web';
+import Logout from '../components/Logout';
 
-class AccountNavigator extends Component {
+class MyAccountScreen extends Component {
 
     constructor(props){
         super(props);
 
         this.state = {
             isLoading: true,
-            accountData: [],
+            accountData: {},
             accountPhoto: null
         }
     }
@@ -140,7 +141,15 @@ class AccountNavigator extends Component {
                                     }}
                                     style={{ width: 200, height: 200 }}
                                 ></Image>
-                                <Text>{this.state.accountData.first_name} {this.state.accountData.last_name} {this.state.accountData.email}</Text>
+                                <Text>{this.state.accountData.first_name} {this.state.accountData.last_name}</Text>
+                                <Text>{this.state.accountData.email}</Text>
+                                <TouchableOpacity style={styles.editButton} onPress={() => this.props.navigation.navigate('EditMyDetailsScreen', { originalData: this.state.accountData })}>
+                                    <Text color="white" textAlign="center">Change Details</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.changePhotoButton} onPress={() => this.props.navigation.navigate('ChangeProfilePhotoScreen')}>
+                                    <Text color="white" textAlign="center">Change Profile Photo</Text>
+                                </TouchableOpacity>
+                                <Logout navigation={this.props.navigation}/>
                             </View>
                         </View>
                     </View>
@@ -169,7 +178,25 @@ const styles = StyleSheet.create({
         //border: "1px solid black"
 
       //border: "1px solid black"
+    },
+    editButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor: 'yellow',
+        borderRadius: 25,
+    },
+    changePhotoButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor: 'lightblue',
+        borderRadius: 25,
     }
   });
 
-  export default AccountNavigator;
+  export default MyAccountScreen;

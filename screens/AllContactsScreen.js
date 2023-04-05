@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, TextInput } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -11,6 +11,7 @@ class AllContactsScreen extends Component {
         this.state = {
             isLoading: true,
             allContactsData: [],
+            search: "",
             error: ""
         }
     }
@@ -87,24 +88,38 @@ class AllContactsScreen extends Component {
                 return (
                     <View style={styles.container1}>
                         <View style={styles.container2}>
+                            <View style={styles.searchContainer}>
+                                <TextInput
+                                    style={styles.searchInput}
+                                    placeholder="Search..."
+                                    onChangeText={(text) => this.setState({ search: text })}
+                                    value={this.state.search}
+                                />
+                            </View>
                             <FlatList
                                 data={this.state.allContactsData}
                                 keyExtractor={(item) => item.user_id.toString()}
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity
-                                    onPress={() =>
-                                        this.props.navigation.navigate("ContactScreen", {
-                                            user_id: item.user_id,
-                                            first_name: item.given_name,
-                                            last_name: item.family_name,
-                                        })
+                                renderItem={({ item }) => {
+                                    if (this.state.search && !(item.given_name.toLowerCase().includes(this.state.search.toLowerCase()) || item.family_name.toLowerCase().includes(this.state.search.toLowerCase()))) {
+                                        return null;
                                     }
-                                    >
-                                    <View style={styles.contactContainer}>
-                                        <Text style={styles.contactName}>{item.given_name} {item.family_name}</Text>
-                                    </View>
-                                    </TouchableOpacity>
-                                )}
+                                    return (
+                                        <TouchableOpacity
+                                        onPress={() =>
+                                            this.props.navigation.navigate("ContactScreen", {
+                                                nav: "allcontacts",
+                                                user_id: item.user_id,
+                                                first_name: item.given_name,
+                                                last_name: item.family_name,
+                                            })
+                                        }
+                                        >
+                                        <View style={styles.contactContainer}>
+                                            <Text style={styles.contactName}>{item.given_name} {item.family_name}</Text>
+                                        </View>
+                                        </TouchableOpacity>
+                                    );
+                                }}
                             />
                         </View>
                     </View>
@@ -129,14 +144,25 @@ const styles = StyleSheet.create({
 
       //border: "1px solid black"
     },
+    searchContainer: {
+        backgroundColor: '#f2f2f2',
+        borderRadius: 8,
+        marginHorizontal: 16,
+        marginVertical: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+      },
+      searchInput: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333333',
+      },    
     textContainer: {
         flex: 1,
         //border: "1px solid blue",
         justifyContent: "center",
         textAlign: "center"
     },
-
-
     contactContainer: {
         flexDirection: 'row',
         alignItems: 'center',

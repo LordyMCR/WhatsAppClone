@@ -12,6 +12,7 @@ class ChatScreen extends Component {
         this.state = {
             isLoading: true,
             chatData: [],
+            chat_name: '',
             userStorageID: '',
             newMessage: ''
         }
@@ -30,7 +31,10 @@ class ChatScreen extends Component {
 
     async getChat() {
         const { route } = this.props;
-        const { chat_id } = route.params;
+        const { chat_id, chat_name } = route.params;
+        this.setState ({
+            chat_name: chat_name
+        });
         try {
         const response = await fetch("http://localhost:3333/api/1.0.0/chat/"+chat_id, {
             method: "GET",
@@ -42,7 +46,10 @@ class ChatScreen extends Component {
             let chatJson = await response.json();
             this.setState({
                 isLoading: false,
-                chatData: chatJson
+                chatData: chatJson,
+            });
+            this.props.navigation.setOptions({
+                title: chatJson.name
             });
         } else if(response.status === 401) {
             this.setState({
@@ -64,6 +71,7 @@ class ChatScreen extends Component {
         } catch (error) {
             console.log(error);
         }
+
     }
 
     async _sendNewMessage() {
@@ -116,10 +124,48 @@ class ChatScreen extends Component {
             } catch (error) {
                 console.log(error);
             }
-        } else {
         }
     }
-    
+
+    async handleDeleteMessage(item) {
+        const { route } = this.props;
+        const { chat_id } = route.params;
+
+        this.setState({
+            isLoading: true
+        });
+
+        try {
+            const response = await fetch("http://localhost:3333/api/1.0.0/chat/"+chat_id+"/message/"+item.message_id, {
+                method: "DELETE",
+                headers: {
+                    "X-Authorization": await AsyncStorage.getItem("whatsthat_session_token")
+                }
+            });
+            if (response.status === 200) {
+                this.setState({
+                    isLoading: false,
+                });
+                this.getChat();
+            } else if(response.status === 401) {
+                this.setState({
+                    isLoading: false,
+                });
+            } else if(response.status === 404) {
+                this.setState({
+                    isLoading: false,
+                });
+            } else {
+                this.setState({
+                    isLoading: false,
+                    chatData: "Internal Server Error, try again"
+                });
+            } 
+            } catch (error) {
+                console.log(error);
+            }
+        } 
+       
 
     componentDidMount(){
         this.chat = this.props.navigation.addListener("focus", () => {
@@ -151,20 +197,32 @@ class ChatScreen extends Component {
                     <View style={styles.container2}>
                         <FlatList
                         inverted
-                            data={this.state.chatData.messages.sort((a, b) => b.timestamp - a.timestamp)}
-                            keyExtractor={(item) => item.message_id.toString()}
-                            renderItem={({ item }) => (
-                                <View style={item.author.user_id === this.state.userStorageID ? styles.chatContainer : styles.chatContainerLeft}>
-                                    <Text style={styles.chatAuthor}>{item.author.first_name} {item.author.last_name}</Text>
-                                    <Text style={styles.chatMessage}>{item.message}</Text>
-                                    <Text style={styles.chatTimestamp}>
-                                        {new Date(item.timestamp).toLocaleString('en-GB', {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            month: 'short',
-                                            day: 'numeric'
-                                        })}
-                                    </Text>
+                        data={this.state.chatData.messages ? this.state.chatData.messages.sort((a, b) => b.timestamp - a.timestamp) : []}
+                        keyExtractor={(item) => item.message_id.toString()}
+                            renderItem={({ item }) => (   
+                                <View View style={item.author.user_id === this.state.userStorageID ? styles.wholeWrapper : styles.wholeWrapperLeft}>
+                                    {item.author.user_id === this.state.userStorageID && (
+                                    <View style={styles.iconWrapper}>
+                                        <TouchableOpacity style={styles.iconContainer} onPress={() => this.props.navigation.navigate('EditChatMessageScreen', { message: item, message_id: item.message_id, chat_id: this.props.route.params.chat_id, chat_name: this.props.route.params.chat_name })}>
+                                        <MaterialCommunityIcons name="pencil" size={20} color="black" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.iconContainer} onPress={() => this.handleDeleteMessage(item)}>
+                                        <MaterialCommunityIcons name="trash-can" size={20} color="black" />
+                                        </TouchableOpacity>
+                                    </View>
+                                    )}
+                                    <View style={item.author.user_id === this.state.userStorageID ? styles.chatContainer : styles.chatContainerLeft}>
+                                        <Text style={styles.chatAuthor}>{item.author.first_name} {item.author.last_name}</Text>
+                                        <Text style={styles.chatMessage}>{item.message}</Text>
+                                        <Text style={styles.chatTimestamp}>
+                                            {new Date(item.timestamp).toLocaleString('en-GB', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })}
+                                        </Text>
+                                    </View>
                                 </View>
                             )} />
 
@@ -179,7 +237,7 @@ class ChatScreen extends Component {
                         />
                         <TouchableOpacity onPress={this._sendNewMessage}>
                             <View style={styles.button}>
-                                <MaterialCommunityIcons name="send" size="24" color="white" textAlign="center" />
+                                <MaterialCommunityIcons name="send" size={24} color="white" textAlign="center" />
                             </View>
                         </TouchableOpacity>
                 </View></>
@@ -189,6 +247,8 @@ class ChatScreen extends Component {
     }
 
 }
+
+
 
 const styles = StyleSheet.create({
     test: {
@@ -206,6 +266,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: 10,
         marginRight: 5,
+        width: "80%",
+        padding: '5px',
+        borderRadius: "15px"
       },
       button: {
         backgroundColor: '#DDA15E',
@@ -229,16 +292,34 @@ const styles = StyleSheet.create({
         paddingTop: "10px",
         paddingBottom: "10px",
         //border: "1px solid black"
-
-      //border: "1px solid black"
     },
+    wholeWrapper: {
+        display: 'flex',
+        flexDirection: 'row',
+        left: '22%',
+    },
+    iconWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginLeft: 10,
+      },
+      iconContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        marginRight: '5px',
+      },
     chatContainer: {
         padding: '10px',
         marginBottom: '10px',
         width: '60%',
         borderRadius: '10px',
         alignSelf: 'flex-end',
-        backgroundColor: '#606C38', /* Light green/blue color for my messages */
+        backgroundColor: '#606C38',
     },
     chatContainerLeft: {
         padding: '10px',
@@ -246,7 +327,7 @@ const styles = StyleSheet.create({
         width: '60%',
         borderRadius: '10px',
         alignSelf: 'flex-start',
-        backgroundColor: '#283618', /* Light gray color for other user's messages */
+        backgroundColor: '#283618',
     },
     chatMessage: {
         fontSize: '16px',

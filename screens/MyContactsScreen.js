@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, TextInput } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -10,7 +10,8 @@ class MyContactsScreen extends Component {
 
         this.state = {
             isLoading: true,
-            myContactsData: []
+            myContactsData: [],
+            search: "",
         }
     }
     
@@ -44,7 +45,6 @@ class MyContactsScreen extends Component {
         } catch (error) {
             console.log(error)
         }
-
     }
 
     componentDidMount(){
@@ -86,24 +86,39 @@ class MyContactsScreen extends Component {
                 return (
                     <View style={styles.container1}>
                         <View style={styles.container2}>
+                        <View style={styles.searchContainer}>
+                            <TextInput
+                                style={styles.searchInput}
+                                placeholder="Search..."
+                                onChangeText={(text) => this.setState({ search: text })}
+                                value={this.state.search}
+                            />
+                        </View>
                             <FlatList
                                 data={this.state.myContactsData}
                                 keyExtractor={(item) => item.user_id.toString()}
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity
-                                    onPress={() =>
-                                        this.props.navigation.navigate("ContactScreen", {
-                                            user_id: item.user_id,
-                                            first_name: item.first_name,
-                                            last_name: item.last_name
-                                        })
+                                renderItem={({ item }) => {
+                                    if (this.state.search && !(item.first_name.toLowerCase().includes(this.state.search.toLowerCase()) || item.last_name.toLowerCase().includes(this.state.search.toLowerCase()))) {
+                                        return null;
                                     }
-                                    >
-                                    <View style={styles.contactContainer}>
-                                        <Text style={styles.contactName}>{item.first_name} {item.last_name}</Text>
-                                    </View>
-                                    </TouchableOpacity>
-                                )}
+                                    return (
+                                      <View style={styles.contactsRow}>
+                                        <TouchableOpacity
+                                          style={styles.contactTouchable}
+                                          onPress={() => this.props.navigation.navigate("ContactScreen", {
+                                              nav: "mycontacts",
+                                              user_id: item.user_id,
+                                              first_name: item.first_name,
+                                              last_name: item.last_name
+                                          })}
+                                        >
+                                          <View style={styles.contactContainer}>
+                                            <Text style={styles.contactName}>{item.first_name} {item.last_name}</Text>
+                                          </View>
+                                        </TouchableOpacity>
+                                      </View>
+                                    );
+                                  }}
                             />
                         </View>
                     </View>
@@ -128,43 +143,47 @@ const styles = StyleSheet.create({
 
       //border: "1px solid black"
     },
+    searchContainer: {
+        backgroundColor: '#f2f2f2',
+        borderRadius: 8,
+        marginHorizontal: 16,
+        marginVertical: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+      },
+      searchInput: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333333',
+      },    
     textContainer: {
         flex: 1,
         //border: "1px solid blue",
         justifyContent: "center",
         textAlign: "center"
     },
-
-
-    contactContainer: {
+    contactsRow: {
         flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 12,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
-      },
-      avatar: {
+    },
+    contactTouchable: {
+        flex: 12,
+    },
+    contactContainer: {
+        paddingVertical: 12,
+    },
+    contactName: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginBottom: 4,
+    },
+    avatar: {
         width: 48,
         height: 48,
         borderRadius: 24,
         marginRight: 12,
-      },
-      contactName: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        marginBottom: 4,
-      },
-      emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      emptyText: {
-        color: '#888',
-        fontSize: 18,
-        textAlign: 'center',
-        marginHorizontal: 32,
-      },
-});
+    },
+    });
 
 export default MyContactsScreen; 
