@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import SuccessfulRegisterScreen from './screens/SuccessfulRegisterScreen';
-import HomeNavigator from './screens/HomeNavigator';
+import LoginScreen from './views/screens/LoginScreen';
+import RegisterScreen from './views/screens/RegisterScreen';
+import SuccessfulRegisterScreen from './views/screens/SuccessfulRegisterScreen';
+import HomeNavigator from './views/navigators/HomeNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +22,7 @@ class App extends Component {
           initialRouteName="Login"
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#FEFAE0'
+              backgroundColor: '#E1E0C1'
             }
           }}
         >
@@ -46,7 +46,7 @@ class App extends Component {
             options={{ 
               headerShown: false,
               headerStyle: {
-                backgroundColor: '#FEFAE0'
+                backgroundColor: '#E1E0C1'
               }
             }}
           />

@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AllChatsScreen from './AllChatsScreen';
-import ContactsNavigator from './ContactsNavigator';
-import MyAccountScreen from './MyAccountScreen';
-
-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import AllChatsScreen from '../screens/AllChatsScreen';
+import ContactsNavigator from './ContactsNavigator';
+import MyAccountScreen from '../screens/MyAccountScreen';
 
 const Tab = createBottomTabNavigator();
 
 class HomeTabNav extends Component {
-
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-        <Tab.Navigator 
-        initialRouteName='Chats'
+      <Tab.Navigator
+        initialRouteName="Chats"
         screenOptions={({ route }) => ({
           headerStyle: {
-            backgroundColor: '#FEFAE0'
+            backgroundColor: '#E1E0C1',
           },
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
@@ -39,8 +36,8 @@ class HomeTabNav extends Component {
           tabBarActiveTintColor: '#606C38',
           tabBarInactiveTintColor: '#000',
           tabBarStyle: {
-            backgroundColor: '#FEFAE0',
-          }
+            backgroundColor: '#E1E0C1',
+          },
         })}
       >
         <Tab.Screen name="Chats" component={AllChatsScreen} />
