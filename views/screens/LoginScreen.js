@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LoadingIcon from '../components/loadingIcon';
 
 class LoginScreen extends Component {
@@ -16,6 +17,7 @@ class LoginScreen extends Component {
       password: '',
       error: '',
       submitted: false,
+      hidePassword: true,
     };
 
     this.onPressLoginButton = this.onPressLoginButton.bind(this);
@@ -47,7 +49,6 @@ class LoginScreen extends Component {
       this.setState({ isLoading: false });
       this.setState({ error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)" });
     } else {
-      console.log(`Button clicked: ${this.state.email} ${this.state.password}`);
       console.log('Validated and ready to send to the API');
 
       // API
@@ -133,7 +134,7 @@ class LoginScreen extends Component {
               />
               <>
                 {this.state.submitted && !this.state.email
-                                        && <Text style={styles.error}>*Email is required</Text>}
+                && <Text style={styles.error}>*Email is required</Text>}
               </>
             </View>
             <View style={styles.password}>
@@ -142,13 +143,22 @@ class LoginScreen extends Component {
                 placeholder="Enter password"
                 onChangeText={(password) => this.setState({ password })}
                 value={this.state.password}
-                secureTextEntry
+                secureTextEntry={this.state.hidePassword}
               />
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name={this.state.hidePassword ? 'eye' : 'eye-off'}
+                  size={20}
+                  color="black"
+                  onPress={() => this.setState({ hidePassword: !this.state.hidePassword })}
+                />
+              </View>
               <>
                 {this.state.submitted && !this.state.password
-                                        && <Text style={styles.error}>*Password is required</Text>}
+                && <Text style={styles.error}>*Password is required</Text>}
               </>
             </View>
+
             <View style={styles.loginbtn}>
               <TouchableOpacity onPress={this.onPressLoginButton}>
                 <View style={styles.button}>
@@ -158,7 +168,7 @@ class LoginScreen extends Component {
             </View>
             <>
               {this.state.error
-                                    && <Text style={styles.error}>{this.state.error}</Text>}
+              && <Text style={styles.error}>{this.state.error}</Text>}
             </>
             <View>
               <TouchableOpacity onPress={() => this.registerNavigate()}>
@@ -215,6 +225,11 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: '5px',
     borderRadius: '15px',
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 15,
+    right: 10,
   },
   signup: {
     justifyContent: 'center',

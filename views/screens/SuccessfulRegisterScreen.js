@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
     paddingTop: '100px',
+    color: '#BC6C25',
   },
   formContainer: {
     flex: 3,

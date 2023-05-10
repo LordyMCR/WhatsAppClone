@@ -10,30 +10,29 @@ import HomeNavigator from './views/navigators/HomeNavigator';
 const Stack = createNativeStackNavigator();
 
 class App extends Component {
-  
   constructor(props) {
     super(props);
   }
-  
-  render() {  
+
+  render() {
     return (
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Login"
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#E1E0C1'
-            }
+              backgroundColor: '#E1E0C1',
+            },
           }}
         >
-          <Stack.Screen 
+          <Stack.Screen
             name="Login"
-            component={LoginScreen} 
+            component={LoginScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
             name="Register"
-            component={RegisterScreen} 
+            component={RegisterScreen}
           />
           <Stack.Screen
             name="SuccessfullyRegistered"
@@ -43,16 +42,16 @@ class App extends Component {
           <Stack.Screen
             name="HomeNavigator"
             component={HomeNavigator}
-            options={{ 
+            options={{
               headerShown: false,
               headerStyle: {
-                backgroundColor: '#E1E0C1'
-              }
+                backgroundColor: '#E1E0C1',
+              },
             }}
           />
         </Stack.Navigator>
       </NavigationContainer>
-    )
+    );
   }
 }
 

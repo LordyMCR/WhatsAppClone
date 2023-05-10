@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
 } from 'react-native';
+import * as EmailValidator from 'email-validator';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingIcon from '../components/loadingIcon';
@@ -17,8 +18,8 @@ class EditMyDetailsScreen extends Component {
       lastName: '',
       email: '',
       password: '',
+      hidePassword: true,
       error: '',
-      submitted: false,
     };
     this.onPressUpdateButton = this.onPressUpdateButton.bind(this);
   }
@@ -38,8 +39,9 @@ class EditMyDetailsScreen extends Component {
   async onPressUpdateButton() {
     this.setState({
       isLoading: true,
-      submitted: true,
     });
+    const NAME_REGEX = /^[A-Za-z]+((('|-|.)?([A-Za-z])+))?$/;
+    const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     try {
       console.log('updating user details...');
       const data = {};
@@ -55,46 +57,64 @@ class EditMyDetailsScreen extends Component {
       if (this.state.password !== '') {
         data.password = this.state.password;
       }
-      const tokenID = await AsyncStorage.getItem('whatsthat_user_id');
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${tokenID}`, {
-        method: 'PATCH',
-        headers: {
-          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.status === 200) {
-        this.setState({
-          isLoading: false,
-          submitted: false,
-        });
-        this.props.navigation.navigate('HomeTabNav', { screen: 'MyAccountScreen' });
-      } else if (response.status === 400) {
-        this.setState({
-          isLoading: false,
-          submitted: false,
-          error: 'Bad Request',
-        });
-      } else if (response.status === 401) {
-        this.setState({
-          isLoading: false,
-          submitted: false,
-          error: 'Unauthorised',
-        });
-      } else if (response.status === 404) {
-        this.setState({
-          isLoading: false,
-          submitted: false,
-          error: 'Not Found',
-        });
+      if (this.state.firstName !== '' && !NAME_REGEX.test(this.state.firstName)) {
+        this.setState({ isLoading: false });
+        this.setState({ error: "First name must only contain upper or lower case letters, and ' special character" });
+      } else if (this.state.firstName === '') {
+        this.setState({ isLoading: false });
+        this.setState({ error: "Can't enter a blank first name" });
+      } else if (this.state.lastName !== '' && !NAME_REGEX.test(this.state.lastName)) {
+        this.setState({ isLoading: false });
+        this.setState({ error: "Last name must only contain upper or lower case letters, and ' special character" });
+      } else if (this.state.lastName === '') {
+        this.setState({ isLoading: false });
+        this.setState({ error: "Can't enter a blank last name" });
+      } else if (this.state.email !== '' && !EmailValidator.validate(this.state.email)) {
+        this.setState({ isLoading: false });
+        this.setState({ error: 'Must enter valid email' });
+      } else if (this.state.email === '') {
+        this.setState({ isLoading: false });
+        this.setState({ error: "Can't enter a blank email" });
+      } else if (this.state.password !== '' && !PASSWORD_REGEX.test(this.state.password)) {
+        this.setState({ isLoading: false });
+        this.setState({ error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)" });
       } else {
-        this.setState({
-          isLoading: false,
-          submitted: false,
-          error: 'Internal Server Error, try again',
+        const tokenID = await AsyncStorage.getItem('whatsthat_user_id');
+        const response = await fetch(`http://localhost:3333/api/1.0.0/user/${tokenID}`, {
+          method: 'PATCH',
+          headers: {
+            'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
         });
+
+        if (response.status === 200) {
+          this.setState({
+            isLoading: false,
+          });
+          this.props.navigation.navigate('HomeTabNav', { screen: 'MyAccountScreen' });
+        } else if (response.status === 400) {
+          this.setState({
+            isLoading: false,
+            error: 'Bad Request',
+          });
+        } else if (response.status === 401) {
+          this.setState({
+            isLoading: false,
+            error: 'Unauthorised',
+          });
+        } else if (response.status === 404) {
+          this.setState({
+            isLoading: false,
+            error: 'Not Found',
+          });
+        } else {
+          this.setState({
+            isLoading: false,
+            error: 'Internal Server Error, try again',
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -119,10 +139,6 @@ class EditMyDetailsScreen extends Component {
                 value={this.state.firstName}
               />
             </View>
-            <>
-              {this.state.submitted && !this.state.firstName
-               && <Text style={styles.error}>*First name is required</Text>}
-            </>
             <View style={styles.lastName}>
               <TextInput
                 style={styles.input}
@@ -131,10 +147,6 @@ class EditMyDetailsScreen extends Component {
                 value={this.state.lastName}
               />
             </View>
-            <>
-              {this.state.submitted && !this.state.lastName
-               && <Text style={styles.error}>*Last name is required</Text>}
-            </>
             <View style={styles.email}>
               <TextInput
                 style={styles.input}
@@ -143,23 +155,23 @@ class EditMyDetailsScreen extends Component {
                 value={this.state.email}
               />
             </View>
-            <>
-              {this.state.submitted && !this.state.email
-               && <Text style={styles.error}>*Email is required</Text>}
-            </>
             <View style={styles.password}>
               <TextInput
                 style={styles.input}
-                placeholder="Enter password"
+                placeholder="Enter new password..."
                 onChangeText={(password) => this.setState({ password })}
                 value={this.state.password}
-                secureTextEntry
+                secureTextEntry={this.state.hidePassword}
               />
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name={this.state.hidePassword ? 'eye' : 'eye-off'}
+                  size={20}
+                  color="black"
+                  onPress={() => this.setState({ hidePassword: !this.state.hidePassword })}
+                />
+              </View>
             </View>
-            <>
-              {this.state.submitted && !this.state.password
-               && <Text style={styles.error}>*Password is required</Text>}
-            </>
             <View style={styles.registerBtn}>
               <TouchableOpacity onPress={this.onPressUpdateButton}>
                 <View style={styles.button}>
@@ -171,10 +183,7 @@ class EditMyDetailsScreen extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-
-            <>
-              {this.state.error && <Text style={styles.error}>{this.state.error}</Text>}
-            </>
+            <Text style={styles.error}>{this.state.error}</Text>
           </View>
         </View>
       </View>
@@ -206,6 +215,11 @@ const styles = StyleSheet.create({
   },
   password: {
     marginBottom: 20,
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 15,
+    right: 10,
   },
   input: {
     height: 50,

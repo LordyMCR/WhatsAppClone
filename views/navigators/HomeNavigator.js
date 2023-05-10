@@ -55,6 +55,9 @@ class HomeNavigator extends Component {
             headerStyle: {
               backgroundColor: '#E1E0C1',
             },
+            headerTitleStyle: {
+              marginLeft: 14,
+            },
             headerLeft: () => (
               <TouchableOpacity
                 style={{ marginLeft: 14 }}
@@ -94,7 +97,6 @@ class HomeNavigator extends Component {
             headerTitleStyle: {
               marginLeft: 14,
             },
-
             headerLeft: () => (
               <TouchableOpacity
                 style={{ marginLeft: 14 }}

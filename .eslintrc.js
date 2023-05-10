@@ -34,6 +34,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'no-nested-ternary': 'off',
     'no-mixed-operators': 'off',
+    'react/no-access-state-in-setstate': 'off',
     'react/no-unstable-nested-components': [
       'error',
       {

@@ -63,7 +63,7 @@ class CreateNewChatScreen extends Component {
       }
     } else {
       this.setState({
-        error: 'Please enter a chat name',
+        error: "Can't create a new chat with a blank name",
       });
     }
   }

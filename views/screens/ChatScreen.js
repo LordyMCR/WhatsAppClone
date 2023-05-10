@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
 import {
-  View, TextInput, TouchableOpacity, FlatList, StyleSheet,
+  View, TextInput, TouchableOpacity, Text, FlatList, StyleSheet,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LoadingIcon from '../components/loadingIcon';
@@ -16,6 +16,7 @@ class ChatScreen extends Component {
       chatData: [],
       userStorageID: '',
       newMessage: '',
+      error: '',
     };
 
     this.sendNewMessage = this.sendNewMessage.bind(this);
@@ -38,7 +39,7 @@ class ChatScreen extends Component {
         console.log(error);
       });
     });
-    // this.update = setInterval(() => this.getChat(), 1000);
+    this.update = setInterval(() => this.getChat(), 1000);
   }
 
   componentWillUnmount() {
@@ -72,15 +73,22 @@ class ChatScreen extends Component {
       } else if (response.status === 401) {
         this.setState({
           isLoading: false,
+          error: 'Unauthorised',
+        });
+      } else if (response.status === 403) {
+        this.setState({
+          isLoading: false,
+          error: 'Forbidden',
         });
       } else if (response.status === 404) {
         this.setState({
           isLoading: false,
+          error: 'Not Found',
         });
       } else {
         this.setState({
           isLoading: false,
-          chatData: 'Internal Server Error, try again',
+          error: 'Internal Server Error, try again',
         });
       }
     } catch (error) {
@@ -117,17 +125,22 @@ class ChatScreen extends Component {
       } else if (response.status === 401) {
         this.setState({
           isLoading: false,
-          chatData: 'Unauthorised',
+          error: 'Unauthorised',
+        });
+      } else if (response.status === 403) {
+        this.setState({
+          isLoading: false,
+          error: 'Forbidden',
         });
       } else if (response.status === 404) {
         this.setState({
           isLoading: false,
-          chatData: 'Not Found',
+          error: 'Not Found',
         });
       } else {
         this.setState({
           isLoading: false,
-          chatData: 'Internal Server Error, try again',
+          error: 'Internal Server Error, try again',
         });
       }
     } catch (error) {
@@ -162,14 +175,22 @@ class ChatScreen extends Component {
         } else if (response.status === 400) {
           this.setState({
             isLoading: false,
+            error: 'Bad Request',
           });
         } else if (response.status === 401) {
           this.setState({
             isLoading: false,
+            error: 'Unauthorised',
+          });
+        } else if (response.status === 403) {
+          this.setState({
+            isLoading: false,
+            error: 'Forbidden',
           });
         } else if (response.status === 404) {
           this.setState({
             isLoading: false,
+            error: 'Not Found',
           });
         } else {
           this.setState({
@@ -192,6 +213,7 @@ class ChatScreen extends Component {
     return (
       <>
         <View style={styles.container1}>
+          <Text style={styles.error}>{this.state.error}</Text>
           <View style={styles.container2}>
             <FlatList
               inverted
@@ -326,6 +348,12 @@ const styles = StyleSheet.create({
   chatTimestamp: {
     fontSize: '12px',
     color: '#BC6C25',
+  },
+  error: {
+    color: 'red',
+    fontSize: '16px',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

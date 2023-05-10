@@ -55,12 +55,12 @@ class ContactScreen extends Component {
       } else if (response.status === 401) {
         this.setState({
           isLoading: false,
-          accountPhoto: 'Unauthorised',
+          error: 'Unauthorised',
         });
       } else if (response.status === 404) {
         this.setState({
           isLoading: false,
-          accountPhoto: 'Not Found',
+          error: 'Not Found',
         });
       } else {
         this.setState({
@@ -88,7 +88,6 @@ class ContactScreen extends Component {
       } else if (response.status === 400) {
         this.setState({ error: "Can't remove yourself" });
       } else if (response.status === 401) {
-        console.log('Unauthorised');
         this.setState({ error: 'Unauthorised' });
       } else if (response.status === 404) {
         this.setState({ error: 'Not found' });

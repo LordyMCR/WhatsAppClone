@@ -129,7 +129,6 @@ class AllChatsScreen extends Component {
           >
             <MaterialCommunityIcons name="message-plus" size={28} color="#fff" />
           </TouchableOpacity>
-
         </View>
       </View>
     );

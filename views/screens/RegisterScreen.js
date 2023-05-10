@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
 } from 'react-native';
-
 import * as EmailValidator from 'email-validator';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LoadingIcon from '../components/loadingIcon';
 
 class RegisterScreen extends Component {
@@ -19,6 +19,8 @@ class RegisterScreen extends Component {
       confirmPassword: '',
       error: '',
       submitted: false,
+      hidePassword: true,
+      hidePasswordConfirm: true,
     };
 
     this.onPressRegisterButton = this.onPressRegisterButton.bind(this);
@@ -49,7 +51,6 @@ class RegisterScreen extends Component {
       this.setState({ isLoading: false });
       this.setState({ error: 'Passwords do not match ' });
     } else {
-      console.log(`Button clicked: ${this.state.firstName} ${this.state.lastName} ${this.state.email} ${this.state.password} ${this.state.confirmPassword}`);
       console.log('Validated and ready to send to the API');
       // API call
       const toSend = {
@@ -122,7 +123,7 @@ class RegisterScreen extends Component {
               />
               <>
                 {this.state.submitted && !this.state.lastName
-                                        && <Text style={styles.error}>*Last name is required</Text>}
+                && <Text style={styles.error}>*Last name is required</Text>}
               </>
             </View>
             <View style={styles.email}>
@@ -134,7 +135,7 @@ class RegisterScreen extends Component {
               />
               <>
                 {this.state.submitted && !this.state.email
-                                        && <Text style={styles.error}>*Email is required</Text>}
+                && <Text style={styles.error}>*Email is required</Text>}
               </>
             </View>
             <View style={styles.password}>
@@ -143,11 +144,19 @@ class RegisterScreen extends Component {
                 placeholder="Enter password"
                 onChangeText={(password) => this.setState({ password })}
                 value={this.state.password}
-                secureTextEntry
+                secureTextEntry={this.state.hidePassword}
               />
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name={this.state.hidePassword ? 'eye' : 'eye-off'}
+                  size={20}
+                  color="black"
+                  onPress={() => this.setState({ hidePassword: !this.state.hidePassword })}
+                />
+              </View>
               <>
                 {this.state.submitted && !this.state.password
-                                        && <Text style={styles.error}>*Password is required</Text>}
+                && <Text style={styles.error}>*Password is required</Text>}
               </>
             </View>
             <View style={styles.confirmPassword}>
@@ -156,8 +165,19 @@ class RegisterScreen extends Component {
                 placeholder="Confirm password"
                 onChangeText={(confirmPassword) => this.setState({ confirmPassword })}
                 value={this.state.confirmPassword}
-                secureTextEntry
+                secureTextEntry={this.state.hidePasswordConfirm}
               />
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name={this.state.hidePasswordConfirm ? 'eye' : 'eye-off'}
+                  size={20}
+                  color="black"
+                  onPress={() => this.setState({
+                    hidePasswordConfirm: !this.state.hidePasswordConfirm,
+                  })}
+                />
+              </View>
+
               <>
                 {this.state.submitted && !this.state.confirmPassword
                  && <Text style={styles.error}>*Confirm password is required</Text>}
@@ -201,7 +221,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
     paddingTop: '50px',
-    color: '#be6e28',
+    color: '#BC6C25',
   },
   formContainer: {
     flex: 5,
@@ -217,6 +237,11 @@ const styles = StyleSheet.create({
   },
   password: {
     marginBottom: 10,
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 15,
+    right: 10,
   },
   confirmPassword: {
     marginBottom: 20,
