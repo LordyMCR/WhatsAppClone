@@ -1,4 +1,4 @@
-# WhatsThatAssignment
+# WhatsAppClone
 
 ## Run server first located here: https://github.com/LordyMCR/WhatsAppCloneServer
 1. Clone the repository into a directory on your local machine. If you have Git installed on your machine then you can run `git clone https://github.com/LordyMCR/WhatsAppCloneServer` in your terminal
